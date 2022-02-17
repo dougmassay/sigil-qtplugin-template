@@ -20,7 +20,7 @@
     <message>
         <location filename="../plugin.py" line="35"/>
         <source>Example Label</source>
-        <translation>Exemple d&quot;étiquette</translation>
+        <translation>Exemple d&apos;étiquette</translation>
     </message>
 </context>
 </TS>
