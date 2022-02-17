@@ -4,10 +4,13 @@ import sys
 # Import top level Qt Modules, as needed, from plugin_utils to automatically handle Qt5 vs Qt6
 from plugin_utils import QtCore, QtWidgets  # , QtGui, QtNetwork, QtPrintSupport, QtSvg, QtWebChannel
 # from plugin_utils import QtWebEngineCore, QtWebEngineWidgets
+
 # Special case imports to handle discrepancies between Qt5 and Qt6
 from plugin_utils import Qt  # , QAction, loadUi, Slot, Signal
+
 # Subclassed QApplication to make many tedious tasks easier
 from plugin_utils import PluginApplication
+
 # Utilities from plugin_utils
 from plugin_utils import iswindows  # , ismacos, qVersion
 from plugin_utils import _t  # Alias to QtCore.QCoreApplication.translate to wrap text to be translated
@@ -60,7 +63,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
 def run(bk):
     # Path to icon to be used for all application Windows
-    icon = os.path.join(bk._w.plugin_dir, bk._w.plugin_name, 'plugin.png')
+    icon = os.path.join(bk._w.plugin_dir, bk._w.plugin_name, 'plugin.svg')
     # Platforms other than Windows will typically already match darkmode
     mdp = True if iswindows else False
     app = PluginApplication(sys.argv, bk, app_icon=icon, match_dark_palette=mdp)
