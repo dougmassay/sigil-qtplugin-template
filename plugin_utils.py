@@ -40,13 +40,13 @@ if SIGIL_QT_MAJOR_VERSION == 6:
     from PySide6 import QtCore, QtGui, QtNetwork, QtPrintSupport, QtSvg, QtWebChannel, QtWidgets  # noqa: F401
     from PySide6 import QtWebEngineCore, QtWebEngineWidgets  # noqa: F401
     from PySide6.QtCore import Qt, Signal, Slot, qVersion  # noqa: F401
-    from PySide6.QtGui import QAction  # noqa: F401
+    from PySide6.QtGui import QAction, QActionGroup  # noqa: F401
     from PySide6.QtUiTools import QUiLoader  # noqa: F401
 elif SIGIL_QT_MAJOR_VERSION == 5:
     from PyQt5 import QtCore, QtGui, QtNetwork, QtPrintSupport, QtSvg, QtWebChannel, QtWidgets  # noqa: F401
     from PyQt5 import QtWebEngineCore, QtWebEngineWidgets  # noqa: F401
     from PyQt5.QtCore import Qt, pyqtSignal as Signal, pyqtSlot as Slot, qVersion  # noqa: F401
-    from PyQt5.QtWidgets import QAction  # noqa: F401
+    from PyQt5.QtWidgets import QAction, QActionGroup  # noqa: F401
     from PyQt5 import uic  # noqa: F401
 
 
@@ -67,6 +67,15 @@ if DEBUG:
 _plat = sys.platform.lower()
 iswindows = 'win32' in _plat or 'win64' in _plat
 ismacos = isosx = 'darwin' in _plat
+
+
+''' PyQt5 translations don't like bytestrings
+    and PySide6 doesn't like utf-8 '''
+def trans_enc(s):
+    if 'PySide6' in sys.modules:
+        return s
+    else:
+        return s.encode('utf-8')
 
 
 ''' Return a tuple of a version string for easy comparison'''
@@ -136,11 +145,16 @@ def convertWeights(weight, inverted=False, shift=False):
 class PluginApplication(QtWidgets.QApplication):
     def __init__(self, args, bk, app_icon=None, match_fonts=True,
                 match_highdpi=True, match_dark_palette=False,
-                match_whats_this=True, load_qtbase_translations=True,
-                load_qtplugin_translations=True, plugin_trans_folder=None):
+                match_whats_this=True, dont_use_native_menubars=False,
+                load_qtbase_translations=True, load_qtplugin_translations=True,
+                plugin_trans_folder=None):
+
+        # Keep menubars in the application windows on all platforms
+        if dont_use_native_menubars:
+            self.setAttribute(Qt.AA_DontUseNativeMenuBar)
 
         self.bk = bk
-        program_name = 'sigil_plugin_{}'.format(bk._w.plugin_name.lower())
+        program_name = '{}'.format(bk._w.plugin_name)
         if plugin_trans_folder is None:
             plugin_trans_folder = os.path.join(self.bk._w.plugin_dir, self.bk._w.plugin_name, 'translations')
 
@@ -219,7 +233,7 @@ class PluginApplication(QtWidgets.QApplication):
         p = QtGui.QPalette()
         sigil_colors = self.bk.color
         dark_color = QtGui.QColor(sigil_colors("Window"))
-        disabled_color = QtGui.QColor(127,127,127)
+        disabled_color = QtGui.QColor(127, 127, 127)
         dark_link_color = QtGui.QColor(108, 180, 238)
         text_color = QtGui.QColor(sigil_colors("Text"))
         p.setColor(p.Window, dark_color)
@@ -379,8 +393,9 @@ if 'PySide6' in sys.modules:
         # If it's in another directory, however, you may need to set the
         # PYSIDE_LOADUI_CWD environment variable to the resource's directory first.
         # Best practice is not to define icons in the .ui file. Do it at the app level.
-        if os.environ('PYSIDE_LOADUI_CWD') is not None:
-            loader.setWorkingDirectory(os.environ('PYSIDE_LOADUI_CWD'))
+        e = os.environ.get('PYSIDE_LOADUI_CWD', None)
+        if e is not None:
+            loader.setWorkingDirectory(e)
         else:
             loader.setWorkingDirectory(QtCore.QDir(SCRIPT_DIRECTORY))
 
