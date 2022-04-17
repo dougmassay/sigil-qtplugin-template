@@ -38,15 +38,40 @@ DEBUG = 1
 
 if SIGIL_QT_MAJOR_VERSION == 6:
     from PySide6 import QtCore, QtGui, QtNetwork, QtPrintSupport, QtSvg, QtWebChannel, QtWidgets  # noqa: F401
-    from PySide6 import QtWebEngineCore, QtWebEngineWidgets  # noqa: F401
-    from PySide6.QtWebEngineCore import QWebEnginePage, QWebEngineProfile, QWebEngineScript, QWebEngineSettings  # noqa: F401
+    # Plugins that don't use QtWebEngine shouldn't fail when external Pythons
+    # don't have PySide6 installed. Bundled Pythons will always have PySide6
+    # installed startting with Qt6 releases.
+    try:
+        from PySide6 import QtWebEngineCore, QtWebEngineWidgets  # noqa: F401
+        from PySide6.QtWebEngineCore import QWebEnginePage, QWebEngineProfile, QWebEngineScript, QWebEngineSettings  # noqa: F401
+    except ImportError:
+        print('QtWebEngine PySide6 Python bindings not found.')
+        print('If this plugin needs QtWebEngine, make sure those bindings are installed.')
+        pass
+    else:
+        if DEBUG:
+            print('QtWebEngine PySide6 Python bindings found.')
+
     from PySide6.QtCore import Qt, Signal, Slot, qVersion  # noqa: F401
     from PySide6.QtGui import QAction, QActionGroup  # noqa: F401
     from PySide6.QtUiTools import QUiLoader  # noqa: F401
 elif SIGIL_QT_MAJOR_VERSION == 5:
     from PyQt5 import QtCore, QtGui, QtNetwork, QtPrintSupport, QtSvg, QtWebChannel, QtWidgets  # noqa: F401
-    from PyQt5 import QtWebEngineCore, QtWebEngineWidgets  # noqa: F401
-    from PyQt5.QtWebEngineWidgets import QWebEnginePage, QWebEngineProfile, QWebEngineScript, QWebEngineSettings   # noqa: F401
+    # Plugins that don't use QtWebEngine shouldn't fail when external Pythons
+    # Don't have PyQt5 installed. And Sigil versions before PyQtWebEngine was added (Pre-1.6)
+    # should be able to run plugins that use this script, but don't use QtWebEngine.
+    try:
+        from PyQt5 import QtWebEngineCore, QtWebEngineWidgets  # noqa: F401
+        from PyQt5.QtWebEngineWidgets import QWebEnginePage, QWebEngineProfile, QWebEngineScript, QWebEngineSettings   # noqa: F401
+    except ImportError:
+        print('QtWebEngine PyQt5 Python bindings not found.')
+        print('If this plugin needs QtWebEngine make sure those bindings are installed')
+        print('(or use Sigil 1.6 or newer, which has it bundled).')
+        pass
+    else:
+        if DEBUG:
+            print('QtWebEngine PyQt5 Python bindings found.')
+
     from PyQt5.QtCore import Qt, pyqtSignal as Signal, pyqtSlot as Slot, qVersion  # noqa: F401
     from PyQt5.QtWidgets import QAction, QActionGroup  # noqa: F401
     from PyQt5 import uic  # noqa: F401
