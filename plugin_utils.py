@@ -56,13 +56,15 @@ if SIGIL_QT_MAJOR_VERSION == 6:
     from PySide6.QtGui import QAction, QActionGroup  # noqa: F401
     from PySide6.QtUiTools import QUiLoader  # noqa: F401
 elif SIGIL_QT_MAJOR_VERSION == 5:
-    from PyQt5 import QtCore, QtGui, QtNetwork, QtPrintSupport, QtSvg, QtWebChannel, QtWidgets  # noqa: F401
+    from PyQt5 import QtCore, QtGui, QtNetwork, QtPrintSupport, QtSvg, QtWidgets  # noqa: F401
     # Plugins that don't use QtWebEngine shouldn't fail when external Pythons
     # Don't have PyQt5 installed. And Sigil versions before PyQtWebEngine was added (Pre-1.6)
     # should be able to run plugins that use this script, but don't use QtWebEngine.
     try:
         from PyQt5 import QtWebEngineCore, QtWebEngineWidgets  # noqa: F401
         from PyQt5.QtWebEngineWidgets import QWebEnginePage, QWebEngineProfile, QWebEngineScript, QWebEngineSettings   # noqa: F401
+        # WebChannel binding not added until Sigil 1.6
+        from PyQt5 import QtWebChannel   # noqa: F401
     except ImportError:
         print('QtWebEngine PyQt5 Python bindings not found.')
         print('If this plugin needs QtWebEngine make sure those bindings are installed')
@@ -293,7 +295,7 @@ class PluginApplication(QtWidgets.QApplication):
             font.setWeight(convertWeights(int(font_lst[4]), inverted=True))
 
         if DEBUG:
-            print(f'Font Weight: {font.weight()}')
+            print('Font Weight: {}'.format(font.weight()))
 
         self.instance().setFont(font)
         if DEBUG:
