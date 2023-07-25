@@ -33,7 +33,7 @@ import inspect
 SCRIPT_DIRECTORY = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 e = os.environ.get('SIGIL_QT_RUNTIME_VERSION', '5.10.0')
 SIGIL_QT_MAJOR_VERSION = tuple(map(int, (e.split("."))))[0]
-DEBUG = 1
+DEBUG = 0
 
 
 if SIGIL_QT_MAJOR_VERSION == 6:
@@ -265,22 +265,22 @@ class PluginApplication(QtWidgets.QApplication):
         disabled_color = QtGui.QColor(127, 127, 127)
         dark_link_color = QtGui.QColor(108, 180, 238)
         text_color = QtGui.QColor(sigil_colors("Text"))
-        p.setColor(p.Window, dark_color)
-        p.setColor(p.WindowText, text_color)
-        p.setColor(p.Base, QtGui.QColor(sigil_colors("Base")))
-        p.setColor(p.AlternateBase, dark_color)
-        p.setColor(p.ToolTipBase, dark_color)
-        p.setColor(p.ToolTipText, text_color)
-        p.setColor(p.Text, text_color)
-        p.setColor(p.Disabled, p.Text, disabled_color)
-        p.setColor(p.Button, dark_color)
-        p.setColor(p.ButtonText, text_color)
-        p.setColor(p.Disabled, p.ButtonText, disabled_color)
-        p.setColor(p.BrightText, Qt.red)
-        p.setColor(p.Link, dark_link_color)
-        p.setColor(p.Highlight, QtGui.QColor(sigil_colors("Highlight")))
-        p.setColor(p.HighlightedText, QtGui.QColor(sigil_colors("HighlightedText")))
-        p.setColor(p.Disabled, p.HighlightedText, disabled_color)
+        p.setColor(QtGui.QPalette.Window, dark_color)
+        p.setColor(QtGui.QPalette.WindowText, text_color)
+        p.setColor(QtGui.QPalette.Base, QtGui.QColor(sigil_colors("Base")))
+        p.setColor(QtGui.QPalette.AlternateBase, dark_color)
+        p.setColor(QtGui.QPalette.ToolTipBase, dark_color)
+        p.setColor(QtGui.QPalette.ToolTipText, text_color)
+        p.setColor(QtGui.QPalette.Text, text_color)
+        p.setColor(QtGui.QPalette.Disabled, QtGui.QPalette.Text, disabled_color)
+        p.setColor(QtGui.QPalette.Button, dark_color)
+        p.setColor(QtGui.QPalette.ButtonText, text_color)
+        p.setColor(QtGui.QPalette.Disabled, QtGui.QPalette.ButtonText, disabled_color)
+        p.setColor(QtGui.QPalette.BrightText, Qt.red)
+        p.setColor(QtGui.QPalette.Link, dark_link_color)
+        p.setColor(QtGui.QPalette.Highlight, QtGui.QColor(sigil_colors("Highlight")))
+        p.setColor(QtGui.QPalette.HighlightedText, QtGui.QColor(sigil_colors("HighlightedText")))
+        p.setColor(QtGui.QPalette.Disabled, QtGui.QPalette.HighlightedText, disabled_color)
 
         self.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
         self.setPalette(p)
