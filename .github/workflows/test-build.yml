@@ -74,7 +74,7 @@ jobs:
         version: '5.12.3'
         dir: ${{runner.workspace}}/Qt
         setup-python: 'false'
-        archives: 'qtbase qttools'
+        archives: 'qtbase qttools icu'
         cache: ${{ steps.cache-qt.outputs.cache-hit }}
 
     - name: Build Plugin
